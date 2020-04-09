@@ -75,10 +75,10 @@ p {
 }
 .footer {
     background: #1c2529;
-    padding: 5px 10px;
-    border-top: 1px solid #151c1f;
+    line-height: 25px;
     text-align: center;
     color: #848484;
+    height:25px;
 }
 .body {
     display: grid;
