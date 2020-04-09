@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<title>DVO Template</title>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/trumbowyg.min.css">
+    <script type="text/javascript" src="js/jquery.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.20.0/trumbowyg.min.js" charset="utf-8"></script>
+    <script>
+        $(document).ready(async function() {
+
+            let urlParams = new URLSearchParams(window.location.search);
+            let userId = urlParams.get('userId');
+            let laserExtensionId = "bnmeokbnbegjnbddihbidleappfkiimj";
+            let port = chrome.runtime.connect(laserExtensionId);
+
+
+            async function isUserLoggedIn() {
+                return new Promise(resolve => {
+                    port.postMessage({
+                        type: "isUserLoggedIn"
+                    });
+                    port.onMessage.addListener(function(res) {
+                        if (res.type === "loggedIn" && res.response) {
+                            resolve(true);
+                        }
+                    });
+                });
+            }
+
+            port.postMessage({
+                type: "getProfile",
+                userId: userId
+            });
+            port.onMessage.addListener(function(res) {
+                if (res.type === "getProfile") {
+                    document.title = res.name;
+                    $('#name').html(res.name);
+                    $('img.profile-photo').attr('src', res.photo);
+                    $('#email').html(res.email);
+                    $('#phone').html(res.phone);
+                    $('#location').html(res.location);
+                    $('.editable').html(res.resume);
+                    console.log(res);
+                }
+            });
+
+
+            let loggedIn = await isUserLoggedIn();
+            if (loggedIn) {
+                $('.content').prepend('<i class="edit fa fa-edit"></i><i class="close fa fa-close"></i>');
+                $('.sidebar').on('focus', '[contenteditable]', function() {
+                    $(this).next('span').html('<i class="edit-details fa fa-save"></i>');
+                });
+
+                $('.sidebar').on('click', '.edit-details', function() {
+                    let $this = $(this).parent().prev();
+                    let update = $this.html();
+                    let field = $this.attr('id');
+                    port.postMessage({
+                        type: "updateProfile",
+                        userId: userId,
+                        field: field,
+                        update: update
+                    });
+                    $(this).fadeOut('slow');
+                });
+
+                $(".edit").click(function() {
+                    if ($(this).hasClass('fa-edit')) {
+                        $('.editable').trumbowyg({
+                            semantic: false
+                        });
+                    } else if ($(this).hasClass('fa-save')) {
+                        let update = $('.editable').html();
+                        port.postMessage({
+                            type: "updateProfile",
+                            userId: userId,
+                            field: 'resume',
+                            update: update
+                        });
+                        $('.editable').trumbowyg('destroy');
+                    }
+                    $(this).toggleClass("fa-edit fa-save");
+                });
+                
+                $(".close").click(function() {
+                    $('.editable').trumbowyg('destroy');
+                });
+            }
+        });
+
+    </script>
+</head>
+
+<div class="container">
+    <div class="body">
+        <div class="sidebar">
+            <div class="sidebar-header"><span id="name" contenteditable="true">Alice Jones</span><span></span></div>
+            <div><img class="profile-photo" src="images/profilepic.jpg" /></div>
+            <div class="sidebar-sub-header">Contact Details</div>
+            <div>
+                <ul id="details">
+                    <li><i class="fa fa-at"></i> <span id="email" contenteditable="true">alice_jones@gmail.com</span><span></span></li>
+                    <li><i class="fa fa-phone"></i> <span id="phone" contenteditable="true">(+44) 07560079745</span><span></span></li>
+                    <li><i class="fa fa-map-marker"></i> <span id="location" contenteditable="true">Devon, UK</span><span></span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="content">
+            <div class="editable" contenteditable="false">
+                <h1>Resume</h1>
+
+                <h2>Sed egestas, ante et vulputate volutpat, eros pede semper est, vitae luctus metus libero eu augue. Morbi purus libero, faucibus adipiscing, commodo quis, gravida id, est.</h2>
+
+                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus hendrerit. Pellentesque aliquet nibh nec urna. In nisi neque, aliquet vel, dapibus id, mattis vel, nisi. Sed pretium, ligula sollicitudin laoreet viverra, tortor libero sodales leo, eget blandit nunc tortor eu nibh. Nullam mollis. Ut justo. Suspendisse potenti. <a href="">And here is some anchor text.</a>
+                </p>
+                <div class="list">
+                    <div class="list-header">List header</div>
+                    <ul>
+                        <li><i class="fa fa-check"></i> Example list item</li>
+                        <li><i class="fa fa-check"></i> Example list item</li>
+                        <li><i class="fa fa-check"></i> Example list item</li>
+                        <li><i class="fa fa-check"></i> Example list item</li>
+                    </ul>
+                </div>
+
+                <p>Morbi interdum mollis sapien. Sed ac risus. Phasellus lacinia, magna a ullamcorper laoreet, lectus arcu pulvinar risus, vitae facilisis libero dolor a purus.</p>
+            </div>
+        </div>
+        <div class="right">
+            <div class="right-header">Photos</div>
+            <div class="photos">
+                <img class="photo" src="images/user7-128x128.jpg" />
+                <img class="photo" src="images/350-200x200.jpg" />
+                <img class="photo" src="images/829-200x200.jpg" />
+            </div>
+        </div>
+    </div>
+    <div class="footer">If you found this service useful, please consider making a <a href="">donation</a></div>
+</div>
