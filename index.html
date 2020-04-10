@@ -43,7 +43,9 @@
                     $('#email').html(res.email);
                     $('#phone').html(res.phone);
                     $('#location').html(res.location);
-                    $('.editable').html(res.resume);
+                    if (res.resume !== null) {
+                        $('.editable').html(res.resume);
+                    }
                     console.log(res);
                 }
             });
@@ -86,7 +88,7 @@
                     }
                     $(this).toggleClass("fa-edit fa-save");
                 });
-                
+
                 $(".close").click(function() {
                     $('.editable').trumbowyg('destroy');
                 });
@@ -111,10 +113,19 @@
             </div>
         </div>
         <div class="content">
-            <div class="editable" contenteditable="false">
+            <div class="editable">
                 <h1>Resume</h1>
 
-                <h2>Sed egestas, ante et vulputate volutpat, eros pede semper est, vitae luctus metus libero eu augue. Morbi purus libero, faucibus adipiscing, commodo quis, gravida id, est.</h2>
+                <h2>Hello and welcome to your new webpage. Are you wandering what to do next? Wander not!</h2>
+                <div class="list">
+                    <div class="list-header">STEPS</div>
+                    <ul>
+                        <li><i class="fa fa-check"></i> STEP 1: Click on your name (top left) and click <i class="fa fa-save"></i></li>
+                        <li><i class="fa fa-check"></i> STEP 2: Click on your email (left) and click <i class="fa fa-save"></i></li>
+                        <li><i class="fa fa-check"></i> STEP 3: Right click on any image and click "Make Profile Picture"</li>
+                        <li><i class="fa fa-check"></i> STEP 4: Figure the rest out for yourself</li>
+                    </ul>
+                </div>
 
                 <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus hendrerit. Pellentesque aliquet nibh nec urna. In nisi neque, aliquet vel, dapibus id, mattis vel, nisi. Sed pretium, ligula sollicitudin laoreet viverra, tortor libero sodales leo, eget blandit nunc tortor eu nibh. Nullam mollis. Ut justo. Suspendisse potenti. <a href="">And here is some anchor text.</a>
                 </p>
