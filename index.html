@@ -7,6 +7,7 @@
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/trumbowyg.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
     <script src="js/jquery.js" charset="utf-8"></script>
     <script src="js/gun.js"></script>
     <script src="js/webrtc.js"></script>
@@ -14,20 +15,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.20.0/trumbowyg.min.js" charset="utf-8"></script>
     <script>
         var gun = Gun(['https://dvo1.herokuapp.com/gun']);
+        //var gun = Gun(['https://gun-us.herokuapp.com/gun'])
         //var gun = Gun(['http://localhost:8765/gun']);
-        //gun.put(null);
-        //var gun = Gun();
-        /*gun.get('random/y3D29QnHh').put({
-            hello: "world"
-        });
-        var ref = gun.get('random/y3D29QnHh');
-        ref.on(function(data) {
-            console.log(data);
-        });*/
+
+        let urlParams = new URLSearchParams(window.location.search);
+        let userId = urlParams.get('userId');
 
         var user = gun.user();
-        //user.put(null);
-        user.get('profile').get('photo').once(function(data) {
+        user.get('profile').once(function(data) {
             console.log("data: " + data);
         });
 
@@ -35,8 +30,6 @@
 
         $(document).ready(async function() {
 
-            let urlParams = new URLSearchParams(window.location.search);
-            let userId = urlParams.get('userId');
             let laserExtensionId = "bnmeokbnbegjnbddihbidleappfkiimj";
             let port = chrome.runtime.connect(laserExtensionId);
 
@@ -75,6 +68,7 @@
 
 
             let loggedIn = await isUserLoggedIn();
+            console.log(loggedIn);
             if (loggedIn) {
                 $('.content').prepend('<i class="edit fa fa-edit"></i><i class="close fa fa-close"></i>');
                 $('.sidebar').on('focus', '[contenteditable]', function() {
