@@ -14,19 +14,53 @@
     <script src="js/sea.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.20.0/trumbowyg.min.js" charset="utf-8"></script>
     <script>
-        var gun = Gun(['https://dvo1.herokuapp.com/gun']);
-        //var gun = Gun(['https://gun-us.herokuapp.com/gun'])
+        //var gun = Gun(['https://dvo1.herokuapp.com/gun']);
+        //var gun = Gun(['https://gun-us.herokuapp.com/gun']);
+        //var gun = Gun('https://gunjs.herokuapp.com/gun');
+        var gun = Gun(['https://aqueous-sea-01664.herokuapp.com/gun']);
+
+        //All of the above produce: Error: Invalid graph! or "Error: Invalid graph! '~u5EF4GYs...' no node."
+
         //var gun = Gun(['http://localhost:8765/gun']);
 
         let urlParams = new URLSearchParams(window.location.search);
         let userId = urlParams.get('userId');
 
-        var user = gun.user();
-        user.get('profile').once(function(data) {
-            console.log("data: " + data);
+        gun.on(function(data) {
+            console.log(data);
+            /*let val = Object.values(data);
+            val = val[0].resume;
+            console.log(val);*/
         });
 
+        /*gun.get('profile').put({
+            name: "Glen"
+        });*/
+        /*let profile = gun.get('undefined~' + userId).get('profile');
 
+        profile.on(function(data) {
+            console.log(data);
+            let obj = JSON.parse(data);
+            let val = Object.values(obj);
+            console.log(val);
+            val = val[0]['#'];
+            
+            gun.get(val).once(function(res){
+                console.log(res);
+            });
+        });*/
+
+        /*{
+            ":": {
+                "#": "k8ycwiyyr3p01q5lxqIL~YFrKdZ87-tJjHKiqHnQq0t9bpieWIZC9oNXKsB0BSo8.dJfK1nOLu-hIsWV6XxtM3RytLvJu56RTCUM6zJ0XEXM."
+            },
+            "~": "WzBn3/LoDs+RDzGW8bdTyZEJbU3oSvE5GB3cpAAsC9qFSzeoe2+xx6RHbLXo0vv4LEdCJosTYtj+yDGsOO2aIg=="
+        }*/
+
+        /*var user = gun.user();
+        user.get('profile').once(function(data) {
+            console.log("data: " + data);
+        });*/
 
         $(document).ready(async function() {
 
@@ -68,7 +102,6 @@
 
 
             let loggedIn = await isUserLoggedIn();
-            console.log(loggedIn);
             if (loggedIn) {
                 $('.content').prepend('<i class="edit fa fa-edit"></i><i class="close fa fa-close"></i>');
                 $('.sidebar').on('focus', '[contenteditable]', function() {
